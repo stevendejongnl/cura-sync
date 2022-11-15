@@ -36,12 +36,12 @@ When there are new archives I copy them to my shared drive.
 And last when there are new archives (from my other machines) in my shared drive I extract them to my cura directories.
 ```bash
 # Check cura file changes and archive
-/home/my_user/.config/cura IN_CREATE,IN_DELETE,IN_CLOSE_WRITE /home/my_user/cura/sync.sh archive
-/home/my_user/.local/share/cura IN_CREATE,IN_DELETE,IN_CLOSE_WRITE /home/my_user/cura/sync.sh archive
+/home/my_user/.config/cura	IN_CREATE,IN_DELETE,IN_CLOSE_WRITE	/home/my_user/cura-sync/sync.sh archive
+/home/my_user/.local/share/cura	IN_CREATE,IN_DELETE,IN_CLOSE_WRITE	/home/my_user/cura-sync/sync.sh archive
 
 # Copy cura archived files to shared directory
-/home/my_user/cura IN_CREATE,IN_DELETE,IN_CLOSE_WRITE cp /home/my_user/cura/config.7z /home/my_user/cura/share.7z /shared_drives/printing/sync/
+/home/my_user/cura-sync	IN_CREATE,IN_DELETE,IN_CLOSE_WRITE	/home/my_user/cura-sync/sync.sh copy /home/my_user/cura-sync/config.7z /home/my_user/cura-sync/share.7z /shared_drives/printing/sync/
 
 # Extract cura files from shared drive
-/shared_drives/printing/sync IN_CREATE,IN_DELETE,IN_CLOSE_WRITE cp /shared_drives/printing/sync/config.7z /shared_drives/printing/sync/share.7z /home/my_user/cura/ && /home/my_user/cura/sync.sh extract
+/shared_drives/printing/sync	IN_CREATE,IN_DELETE,IN_CLOSE_WRITE	/home/my_user/cura-sync/sync.sh copy /shared_drives/printing/sync/config.7z /shared_drives/printing/sync/share.7z /home/my_user/cura-sync/ && /home/my_user/cura-sync/sync.sh extract
 ```

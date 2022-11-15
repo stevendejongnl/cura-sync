@@ -25,17 +25,31 @@ unlock () {
 
 archive () {
 	lock
-	7z a config "$HOME/.config/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst
-	7z a share "$HOME/.local/share/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst
+	7z a config "$HOME/.config/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst | tee "$REPODIR/logs/config-archive.log"
+	7z a share "$HOME/.local/share/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst | tee "$REPODIR/logs/share-archive.log"
 	unlock
 }
 
 
 extract () {
 	lock
-	7z x "$REPODIR/config.7z" -o"$HOME/.config"
-	7z x "$REPODIR/share.7z" -o"$HOME/.local/share"
+	7z x "$REPODIR/config.7z" -o"$HOME/.config" | tee "$REPODIR/logs/config-extract.log"
+	7z x "$REPODIR/share.7z" -o"$HOME/.local/share" | tee "$REPODIR/logs/share-extract.log"
 	unlock
+}
+
+
+copy () {
+	if test -f "$REPODIR/.lock"; then
+		echo "Sync locked, wait or remove .lock yourself."
+
+		sleep 30s
+		copy "$1" "$2" "$3"
+	else
+		touch "$REPODIR/.lock"
+		cp -Rv "$1" "$2" "$3" | tee "$REPODIR/logs/copy.log"
+		unlock
+	fi
 }
 
 
@@ -49,14 +63,22 @@ if [[ $1 == "extract" ]]; then
 	exit 0
 fi
 
+if [[ $1 == "copy" ]]; then
+	copy "$2" "$3" "$4"
+	exit 0
+fi
 
-read -p "Archive or Extract? (a/e) " yn
+
+read -p "Archive, Extract or copy? (a/e/c) " yn
 case $yn in
 	e )
 		extract
 	;;
 	a )
 		archive
+	;;
+	a )
+		copy "$1" "$2" "$3"
 	;;
 	* )
 		echo invalid response
