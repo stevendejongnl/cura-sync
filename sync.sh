@@ -18,14 +18,23 @@ extract () {
 }
 
 
+if [[ $1 == "archive" ]]; then
+	archive
+	exit 0
+fi
+
+if [[ $1 == "extract" ]]; then
+	extract
+	exit 0
+fi
 
 
-read -p "Extract or Archive? (extract/archive) " yn
+read -p "Archive or Extract? (a/e) " yn
 case $yn in
-	extract )
+	e )
 		extract
 	;;
-	archive )
+	a )
 		archive
 	;;
 	* )
