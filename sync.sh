@@ -1,20 +1,41 @@
 #! /bin/bash
 
+REPODIR=$(dirname "$0")
+
 if ! command -v 7z &> /dev/null; then
 	echo "7z could not be found"
 	exit
 fi
 
 
+lock () {
+	if test -f "$REPODIR/.lock"; then
+		echo "Sync locked, wait or remove .lock yourself."
+		exit 0
+	fi
+
+	touch "$REPODIR/.lock"
+}
+
+
+unlock () {
+	rm "$REPODIR/.lock"
+}
+
+
 archive () {
-	7z a config "$HOME/.config/cura" -xr@exclude.lst
-	7z a share "$HOME/.local/share/cura" -xr@exclude.lst
+	lock
+	7z a config "$HOME/.config/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst
+	7z a share "$HOME/.local/share/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst
+	unlock
 }
 
 
 extract () {
-	7z x "config.7z" -o"$HOME/.config"
-	7z x "share.7z" -o"$HOME/.local/share"
+	lock
+	7z x "$REPODIR/config.7z" -o"$HOME/.config"
+	7z x "$REPODIR/share.7z" -o"$HOME/.local/share"
+	unlock
 }
 
 
