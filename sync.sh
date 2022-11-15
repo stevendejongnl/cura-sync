@@ -27,6 +27,7 @@ archive () {
 	lock
 	7z a config "$HOME/.config/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst | tee "$REPODIR/logs/config-archive.log"
 	7z a share "$HOME/.local/share/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst | tee "$REPODIR/logs/share-archive.log"
+	sleep 1h
 	unlock
 }
 
@@ -35,6 +36,7 @@ extract () {
 	lock
 	7z x "$REPODIR/config.7z" -o"$HOME/.config" | tee "$REPODIR/logs/config-extract.log"
 	7z x "$REPODIR/share.7z" -o"$HOME/.local/share" | tee "$REPODIR/logs/share-extract.log"
+	sleep 1h
 	unlock
 }
 
@@ -65,6 +67,11 @@ fi
 
 if [[ $1 == "copy" ]]; then
 	copy "$2" "$3" "$4"
+	exit 0
+fi
+
+if [[ $1 == "unlock" ]]; then
+	unlock
 	exit 0
 fi
 
