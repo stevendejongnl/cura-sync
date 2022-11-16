@@ -25,6 +25,7 @@ unlock () {
 
 archive () {
 	lock
+	rm "$REPODIR/config.7z" "$REPODIR/share.7z"
 	7z a config "$HOME/.config/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst | tee "$REPODIR/logs/config-archive.log"
 	7z a share "$HOME/.local/share/cura" -w"$REPODIR" -xr@$REPODIR/exclude.lst | tee "$REPODIR/logs/share-archive.log"
 	sleep 1h
