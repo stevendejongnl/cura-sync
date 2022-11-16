@@ -85,7 +85,7 @@ case $yn in
 	a )
 		archive
 	;;
-	a )
+	c )
 		copy "$1" "$2" "$3"
 	;;
 	* )
